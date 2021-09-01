@@ -1,0 +1,35 @@
+---
+- hosts: loadbalancer
+  become: yes
+
+  tasks:
+  - name: update apt update_cache
+    apt:
+      update_cache: yes
+
+  - name: install haproxy en socat
+    apt:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+      - haproxy
+      - socat
+      gather_facts: yes
+
+  - name: enable haproxy
+    replace: dest='/etc/default/haproxy'
+      regexp='ENABLED=0'
+      replace='ENABLED=1'
+
+  - name: deploy haproxy config
+    template:
+      src: ~/Desktop/vm2/ansible_roles/loadbalancer/templates/haproxy.cfg.j2
+      dest: /etc/haproxy/haproxy.cfg
+      backup: yes
+    
+  - name: restart haproxy
+    ansible.builtin.service:
+      name: haproxy
+      state: restarted
+...

@@ -1,0 +1,8 @@
+backend haproxy_backend
+        option httpchk GET /httpchk HTTP/1.1
+        balance roundrobin
+        mode http
+        #add all hosts of webservers group with nwadapter eth1
+    {% for host in groups[webservers] %}
+        server {{ host }} {{ hostvars[host].ansible_eth1.ipv4.address }:80}
+    {% endfor %}

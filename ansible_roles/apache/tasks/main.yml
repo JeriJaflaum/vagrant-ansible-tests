@@ -1,0 +1,12 @@
+---
+# tasks file for apache
+
+- hosts: webservers
+  become: yes
+ 
+  tasks:
+  - name: install apache
+    apt:
+      name: apache2
+      state: latest
+...

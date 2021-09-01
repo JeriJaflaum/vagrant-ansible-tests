@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  # SSH key importen
+  config.ssh.insert_key = false
+  config.ssh.private_key_path = ["~/.ssh/id_rsa","~/.vagrant.d/insecure_private_key"]
+
+  #loadbalancers genereren
+  config.vm.define "omgeving-klant1-lb1" do |lbl_config|
+    lbl_config.vm.box = "vmtype"
+    lbl_config.vm.hostname = "omgeving-klant1-lb1"
+    lbl_config.vm.private_network, ip "192.168.33.12"
+    lbl_config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+    lbl_config.vm.provider "virtualbox" do |vb|
+      vb.name = "omgeving-klant1-lb1"
+    end
+  end
+
+ #webservers genereren
+ config.vm.define "omgeving-klant1-web1" do |web_config|
+  web_config.vm.box = "vm.type"
+  web_config.vm.hostname = "omgeving-klant1-web1"
+  web_config.vm.private_network, ip "192.168.1.10"
+  web_config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+  web_config.vm.provider "virtualbox" do |vb|
+      vb.name = "omgeving-klant1-web1"
+    end
+  end
+
+    config.vm.define "omgeving-klant1-web2" do |web_config|
+      web_config.vm.box = "vm.type"
+      web_config.vm.hostname = "omgeving-klant1-web2"
+      web_config.vm.private_network, ip "192.168.1.11"
+      web_config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+      web_config.vm.provider "virtualbox" do |vb|
+          vb.name = "omgeving-klant1-web2"
+        end
+      end
+
+  end
